@@ -80,7 +80,7 @@ public class ABMLabel extends ABMComponent {
 	
 	public String getText() {
 		if (!mRawHTML.equals("")) {
-			BA.Log("WARNING: Text was last set as RAW HTML, so the result of .Text can be unpredictable");
+			//BA.Log("WARNING: Text was last set as RAW HTML, so the result of .Text can be unpredictable");
 		}
 		if (GotLastText) {
 			return mText;

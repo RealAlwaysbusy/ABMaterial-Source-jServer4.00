@@ -77,6 +77,18 @@ public class ABMSVGSurface extends ABMComponent {
 	
 	@Override
 	protected void RemoveMe() {
+		StringBuilder s = new StringBuilder();
+		String surID = ParentString + ArrayName.toLowerCase() + ID.toLowerCase();
+		
+		surID = surID.replace("-", "_");
+		s.append("svgs['" + surID + "']=null;");
+		
+		Page.ws.Eval(s.toString(), null);
+		try {
+			Page.ws.Flush();
+		} catch (IOException e) {			
+		}
+		
 		ABMaterial.RemoveHTML(Page, ParentString + ArrayName.toLowerCase() + ID.toLowerCase());
 	}
 		
@@ -101,7 +113,8 @@ public class ABMSVGSurface extends ABMComponent {
 		
 		surID = surID.replace("-", "_");
 				
-		s.append("if (typeof svgs['" + surID + "']=='undefined') {svgs['" + surID + "']=Snap('#" + ParentString + ArrayName.toLowerCase() + ID.toLowerCase() + "');}");
+		//s.append("if (typeof svgs['" + surID + "']=='undefined' || svgs['" + surID + "']==null) {svgs['" + surID + "']=Snap('#" + ParentString + ArrayName.toLowerCase() + ID.toLowerCase() + "');}");
+		s.append("svgs['" + surID + "']=Snap('#" + ParentString + ArrayName.toLowerCase() + ID.toLowerCase() + "');");
 		for (Entry<String, ABMSVGElement> entry: Elements.entrySet()) {
 			if (entry.getValue().IsDirty) {
 				ABMSVGElement el = entry.getValue();

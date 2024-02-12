@@ -908,9 +908,9 @@ public class ABMRow {
 		
 	}
 	
-	protected void SetEventHandlerParent(Object parentEventHandler) {
+	protected void DoSetEventHandlerParent(Object parentEventHandler) {
 		for (Entry<String, ABMCell> cell : Cells.entrySet()) {
-			cell.getValue().SetEventHandlerParent(parentEventHandler);							
+			cell.getValue().DoSetEventHandlerParent(parentEventHandler);							
         }
 	}	
 	

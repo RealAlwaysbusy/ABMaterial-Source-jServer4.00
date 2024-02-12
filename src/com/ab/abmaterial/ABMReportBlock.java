@@ -12,10 +12,10 @@ public class ABMReportBlock {
 	protected ABMReport mGroup;
 	protected String mQuery="";
 	protected List mTexts = new List();
+	protected List mRaws = new List();
 	protected List mWidths = new List();
 	protected List mClassesOpen = new List();
 	protected List mClassesClosed = new List();
-	protected List mRaws = new List();
 	protected String mRowClassesOpen="";
 	protected String mRowClassesClosed="";
 	protected ABMContainer mContainer;
@@ -50,6 +50,7 @@ public class ABMReportBlock {
 	protected boolean IsPageBreak=false;
 	
 	protected String mExtraClasses="";
+	
 		
 	/**
 	 * Enable/Disable this component from being printed 
@@ -108,6 +109,10 @@ public class ABMReportBlock {
 	
 	public void SetColumnRaw(int index, String HTMLRaw) {
 		mTexts.Set(index, HTMLRaw);
+		mRaws.Set(index,true);
+	}
+	
+	public void SetColumnRaw2(int index) {
 		mRaws.Set(index,true);
 	}
 	

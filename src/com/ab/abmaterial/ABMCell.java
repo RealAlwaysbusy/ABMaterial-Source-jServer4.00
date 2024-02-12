@@ -540,7 +540,7 @@ public class ABMCell extends ABMObject{
 			ABMComponent comp = (ABMComponent) entry.getValue();		
 			String componentId=comp.ArrayName.toLowerCase() + comp.ID.toLowerCase();
 			
-			if (comp.EventHandler!=null) {				
+			if (comp.mEventHandler!=null) {				
 				Page.EventHandlers.remove(comp.ID.toLowerCase());
 			}
 			
@@ -618,7 +618,7 @@ public class ABMCell extends ABMObject{
 				component.ParentString = "";
 			}
 			component.CellAlign = Theme.Align;
-			component.SetEventHandler();
+			component.DoSetEventHandler();
 		
 			String extra = ABMaterial.AddComponent(Page, component);		
 			if (Parent==null) {
@@ -661,7 +661,7 @@ public class ABMCell extends ABMObject{
 				container.ParentString = "";
 			}
 			container.CellAlign = Theme.Align;
-			container.SetEventHandler();
+			container.DoSetEventHandler();
 			
 			if (!IsVisible) {
 				container.mVisibility = ABMaterial.VISIBILITY_HIDE_ALL;				
@@ -910,7 +910,7 @@ public class ABMCell extends ABMObject{
 				component.RowId = RowId;
 				component.AddArrayName(arrayName);
 				component.CellAlign = Theme.Align;
-				component.SetEventHandler();
+				component.DoSetEventHandler();
 							
 				String extra = ABMaterial.AddComponent(Page, component);
 				if (Parent==null) {
@@ -932,7 +932,7 @@ public class ABMCell extends ABMObject{
 				component.AddArrayName(arrayName);
 				component.ParentString = this.ParentString;
 				component.CellAlign = Theme.Align;
-				component.SetEventHandler();
+				component.DoSetEventHandler();
 			
 				String extra = ABMaterial.AddComponent(Page, component);
 				if (Parent==null) {
@@ -994,7 +994,7 @@ public class ABMCell extends ABMObject{
 		if (comp==null) {			
 			return;
 		}
-		if (comp.EventHandler!=null) {				
+		if (comp.mEventHandler!=null) {				
 			Page.EventHandlers.remove(comp.ID.toLowerCase());
 		}
 		if (Parent==null) {
@@ -1382,10 +1382,10 @@ public class ABMCell extends ABMObject{
 		}
 	}
 	
-	protected void SetEventHandlerParent(Object parentEventHandler) {
+	protected void DoSetEventHandlerParent(Object parentEventHandler) {
 		for(Iterator<Map.Entry<String, ABMComponent>>it=Components.entrySet().iterator();it.hasNext();){
 			Map.Entry<String, ABMComponent> comp = it.next();
-			comp.getValue().SetEventHandlerParent(parentEventHandler);
+			comp.getValue().DoSetEventHandlerParent(parentEventHandler);
 		}
 	}
 	

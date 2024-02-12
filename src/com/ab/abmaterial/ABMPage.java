@@ -2858,6 +2858,22 @@ public class ABMPage{
 		return EventHandlers.getOrDefault(eventName.toLowerCase(), me);
 	}
 	
+	public void ClearAllEventHandlers() {
+		EventHandlers.clear();
+	}
+	
+	/*
+	@SuppressWarnings("deprecation")
+	@Override
+	protected void finalize() throws Throwable {
+		if (!this.mPageID.equals("")) {
+			BA.Log("Cleaning up " + this.mPageID + " for Garbage Collection...");
+		}
+		EventHandlers.clear();
+		super.finalize();
+	}
+	*/	
+	
 	@Hide
 	public void SaveNavigationBarPosition(WebSocket ws) {
 		anywheresoftware.b4a.objects.collections.List Params = new anywheresoftware.b4a.objects.collections.List();
@@ -4859,10 +4875,10 @@ public class ABMPage{
             	writer.write("<html" + notrans + ">\n<head>\n");
             }
             if ((ABMaterial.CW)) {
-            	String z = ABMaterial.encrypt("This WebApp/WebSite was generated using ABMaterial v" + ABMaterial.Version + ", a B4X library written by Alain Bailleul 2015-2018. See http://alwaysbusycorner.com/abmaterial");
+            	String z = ABMaterial.encrypt("This WebApp/WebSite was generated using ABMaterial v" + ABMaterial.Version + ", a B4X library written by Alain Bailleul 2015-2022. See http://alwaysbusycorner.com/abmaterial");
             	writer.write("<!-- " + z + " -->\n");
             } else {
-            	writer.write("<!-- This WebApp/WebSite was generated using ABMaterial v" + ABMaterial.Version + ", a B4X library written by Alain Bailleul 2015-2018. See http://alwaysbusycorner.com/abmaterial -->\n");
+            	writer.write("<!-- This WebApp/WebSite was generated using ABMaterial v" + ABMaterial.Version + ", a B4X library written by Alain Bailleul 2015-2022. See http://alwaysbusycorner.com/abmaterial -->\n");
             }
       
             writer.write("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=" + PageCharset + "\">\n");            	
@@ -5399,20 +5415,20 @@ public class ABMPage{
 	        			File buildFileCSS = new File(pageDir, Name + "." + ReloadStringInner + ".css");	
 	        			writerCSS = new BufferedWriter(new FileWriter(buildFileCSS));
 	        			if (ABMaterial.CW) {
-	                    	String z = ABMaterial.encrypt("This WebApp/WebSite was generated using ABMaterial v" + ABMaterial.Version + ", a B4X library written by Alain Bailleul 2015-2018. See http://alwaysbusycorner.com/abmaterial");
+	                    	String z = ABMaterial.encrypt("This WebApp/WebSite was generated using ABMaterial v" + ABMaterial.Version + ", a B4X library written by Alain Bailleul 2015-2022. See http://alwaysbusycorner.com/abmaterial");
 	                    	writerCSS.write("/* " + z + "*/\n");
 	                    } else {
-	                    	writerCSS.write("/* This WebApp/WebSite was generated using ABMaterial v" + ABMaterial.Version + ", a B4X library written by Alain Bailleul 2015-2018. See http://alwaysbusycorner.com/abmaterial*/\n");
+	                    	writerCSS.write("/* This WebApp/WebSite was generated using ABMaterial v" + ABMaterial.Version + ", a B4X library written by Alain Bailleul 2015-2022. See http://alwaysbusycorner.com/abmaterial*/\n");
 	                    }
 	        			WriteCSSPage(writerCSS, relPath);
 	        		} else {
 	    				File buildFileCSS = new File(pageDir, this.CompleteTheme.Name + Name + "." + ReloadStringInner + ".css");	
 	    				writerCSS = new BufferedWriter(new FileWriter(buildFileCSS));
 	    				if (ABMaterial.CW) {
-	    	            	String z = ABMaterial.encrypt("This WebApp/WebSite was generated using ABMaterial v" + ABMaterial.Version + ", a B4X library written by Alain Bailleul 2015-2018. See http://alwaysbusycorner.com/abmaterial");
+	    	            	String z = ABMaterial.encrypt("This WebApp/WebSite was generated using ABMaterial v" + ABMaterial.Version + ", a B4X library written by Alain Bailleul 2015-2022. See http://alwaysbusycorner.com/abmaterial");
 	    	            	writerCSS.write("/* " + z + "*/\n");
 	    	            } else {
-	    	            	writerCSS.write("/* This WebApp/WebSite was generated using ABMaterial v" + ABMaterial.Version + ", a B4X library written by Alain Bailleul 2015-2018. See http://alwaysbusycorner.com/abmaterial*/\n");
+	    	            	writerCSS.write("/* This WebApp/WebSite was generated using ABMaterial v" + ABMaterial.Version + ", a B4X library written by Alain Bailleul 2015-2022. See http://alwaysbusycorner.com/abmaterial*/\n");
 	    	            }
 	    				WriteCSSPage(writerCSS, relPath);
 	        		}
@@ -6122,10 +6138,10 @@ public class ABMPage{
 	    			CloudJSPath = buildFileJS.getAbsolutePath();
 	    			writerJS = new BufferedWriter(new FileWriter(buildFileJS));	       
 	    			if (ABMaterial.CW) {
-	                	String z = ABMaterial.encrypt("This WebApp/WebSite was generated using ABMaterial v" + ABMaterial.Version + ", a B4X library written by Alain Bailleul 2015-2018. See http://alwaysbusycorner.com/abmaterial");
+	                	String z = ABMaterial.encrypt("This WebApp/WebSite was generated using ABMaterial v" + ABMaterial.Version + ", a B4X library written by Alain Bailleul 2015-2022. See http://alwaysbusycorner.com/abmaterial");
 	                	writerJS.write("// " + z + "\n");
 	                } else {
-	                	writerJS.write("// This WebApp/WebSite was generated using ABMaterial v" + ABMaterial.Version + ", a B4X library written by Alain Bailleul 2015-2018. See http://alwaysbusycorner.com/abmaterial\n");
+	                	writerJS.write("// This WebApp/WebSite was generated using ABMaterial v" + ABMaterial.Version + ", a B4X library written by Alain Bailleul 2015-2022. See http://alwaysbusycorner.com/abmaterial\n");
 	                }
 	    			WriteJSPage(writerJS, relPath, NeedsAutorization,ReloadStringInner, IsApp);
 	        	} catch (Exception e) {
@@ -7728,29 +7744,29 @@ public class ABMPage{
     	writer.write("};");
     	    	
     	writer.write("function nextcontentrow(id, offset, table) {");
-    	writer.write("var tmpid = \"_\" + id.toLowerCase();");
-    	writer.write("if (!$('#' + tmpid).hasClass('scrollLoaded')) {");
-    	writer.write("$('#' + tmpid).addClass('scrollLoaded');");
-    	writer.write("if (contentinview($('#' + tmpid)[0])) {");
-    	writer.write("b4j_raiseEvent('page_parseevent', {");
-    	writer.write("'eventname': table + '_nextcontent',");
-    	writer.write("'eventparams': 'triggerrow',");
-    	writer.write("'triggerrow': id");
-    	writer.write("});");
-    	writer.write("return;");
-    	writer.write("}");
-    	writer.write("}");
+    		writer.write("var tmpid = \"_\" + id.toLowerCase();");
+    		writer.write("if (!$('#' + tmpid).hasClass('scrollLoaded')) {");
+    			writer.write("$('#' + tmpid).addClass('scrollLoaded');");
+    			writer.write("if (contentinview($('#' + tmpid)[0])) {");
+    				writer.write("b4j_raiseEvent('page_parseevent', {");
+    					writer.write("'eventname': table + '_nextcontent',");
+    					writer.write("'eventparams': 'triggerrow',");
+    					writer.write("'triggerrow': id");
+    				writer.write("});");
+    				writer.write("return;");
+    			writer.write("}");
+    			writer.write("}");
     	
-    	writer.write("$('#' + table + '-body').parent().off('scroll').on('scroll', function () {");
+    			writer.write("$('#' + table + '-body').parent().off('scroll').on('scroll', function () {");
     	//writer.write("if ($(this).scrollTop() + $(this).innerHeight() >= $(this)[0].scrollHeight-0.9999) {");
-    	writer.write("if ($(this).scrollTop() + $(this).innerHeight() >= $(this)[0].scrollHeight-1) {");
-    	writer.write("b4j_raiseEvent('page_parseevent', {");
-    	writer.write("'eventname': table + '_nextcontent',");
-    	writer.write("'eventparams': 'triggerrow',");
-    	writer.write("'triggerrow': id");
-    	writer.write("});");
-    	writer.write("}");
-    	writer.write("});");
+    			writer.write("if ($(this).scrollTop() + $(this).innerHeight() >= $(this)[0].scrollHeight-1) {");
+    				writer.write("b4j_raiseEvent('page_parseevent', {");
+    					writer.write("'eventname': table + '_nextcontent',");
+    					writer.write("'eventparams': 'triggerrow',");
+    					writer.write("'triggerrow': id");
+    				writer.write("});");
+    			writer.write("}");
+    		writer.write("});");
     	writer.write("};");
     	
     	writer.write("function nextcontentcontainer(par, arrayname, id, containerid, rc, offset) {");       
@@ -10938,6 +10954,7 @@ public class ABMPage{
     	writer.write("'eventparams': 'value',");
     	writer.write("'value': $(this).val()");
     	writer.write("});");
+    	writer.write("b4j_raiseEvent('page_parseevent', {'eventname': $(this).attr('evname') + '_changedarray','eventparams': 'target,value', 'target': $(this).attr('idname'), 'value':$(this).val()});");
     	writer.write("}");
     	writer.write("if ($(this).val().length == 0) {");
     	writer.write("$('#' + $(this).attr('id') + 'req').removeClass('hide');");
@@ -10992,6 +11009,7 @@ public class ABMPage{
     	writer.write("}");
     	writer.write("if ($(this).hasClass('raisechangedcheck')) {");
     	writer.write("b4j_raiseEvent('page_parseevent', {'eventname': $(this).attr('evname') + '_changed','eventparams': 'value', 'value':$(this).val()});");
+    	writer.write("b4j_raiseEvent('page_parseevent', {'eventname': $(this).attr('evname') + '_changedarray','eventparams': 'target,value', 'target': $(this).attr('idname'), 'value':$(this).val()});");
     	writer.write("if ($(this).hasClass('validateabm')) {$(this).removeClass(\"invalid\");$(this).removeClass(\"valid\");if ($(this).val().length==0) {$(this).addClass(\"invalid\");} else {$(this).addClass(\"valid\");}};");
     	writer.write("}");
     	writer.write("}");
@@ -11009,6 +11027,7 @@ public class ABMPage{
     	writer.write("if (e.keyCode == \"undefined\") { return };");
     	writer.write("if ($(this).hasClass('raisechanged')) {");
     	writer.write("b4j_raiseEvent('page_parseevent', {'eventname': $(this).attr('evname') + '_changed','eventparams': 'value', 'value':$(this).val()});");
+    	writer.write("b4j_raiseEvent('page_parseevent', {'eventname': $(this).attr('evname') + '_changedarray','eventparams': 'target,value', 'target': $(this).attr('idname'), 'value':$(this).val()});");
     	writer.write("}"); 
     	writer.write("if ($(this).val().length==0) {");
     	writer.write("$('#' + $(this).attr('id') + 'req').removeClass('hide');");
@@ -11017,6 +11036,7 @@ public class ABMPage{
     	writer.write("}");
     	writer.write("if ($(this).hasClass('raisechangedcheck')) {");
     	writer.write("b4j_raiseEvent('page_parseevent', {'eventname': $(this).attr('evname') + '_changed','eventparams': 'value', 'value':$(this).val()});");
+    	writer.write("b4j_raiseEvent('page_parseevent', {'eventname': $(this).attr('evname') + '_changedarray','eventparams': 'target,value', 'target': $(this).attr('idname'), 'value':$(this).val()});");
     	writer.write("if ($(this).hasClass('validateabm')) {$(this).removeClass(\"invalid\");$(this).removeClass(\"valid\");if ($(this).val().length==0) {$(this).addClass(\"invalid\");} else {$(this).addClass(\"valid\");}};");
     	writer.write("}");    	
     	writer.write("var nextthis = $(this).next();");

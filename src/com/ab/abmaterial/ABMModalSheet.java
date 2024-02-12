@@ -34,7 +34,7 @@ public class ABMModalSheet extends ABMObject {
 	
 	public boolean IsTextSelectable=true;
 	
-	public Object EventHandler=null;
+	protected Object mEventHandler=null;
 	
 	public String MaxWidth="";
 	public String MaxHeight="";
@@ -137,7 +137,7 @@ public class ABMModalSheet extends ABMObject {
 	}
 		
 	protected String Build() {	
-		SetEventHandler();
+		DoSetEventHandler();
 		if (Theme.ThemeName.equals("default")) {
 			Theme.Colorize(Page.CompleteTheme.MainColor);
 		}
@@ -286,7 +286,7 @@ public class ABMModalSheet extends ABMObject {
 	 * This is a limited version of Refresh() which will only refresh the modalsheet properties + each row properties + each cell properties, NOT its contents.		 
 	 */
 	public void RefreshNoContents(boolean DoFlush) {
-		SetEventHandler();
+		DoSetEventHandler();
 		
 		if (!MaxWidth.equals("")) {
 			ABMaterial.SetStyleProperty(Page, ID.toLowerCase(), "max-width", MaxWidth);
@@ -342,7 +342,7 @@ public class ABMModalSheet extends ABMObject {
 	}
 	
 	protected void RefreshInternalExtra(boolean onlyNew, boolean DoTheChecks, boolean DoFlush) {
-		SetEventHandler();
+		DoSetEventHandler();
 		
 		if (!MaxWidth.equals("")) {
 			ABMaterial.SetStyleProperty(Page, ID.toLowerCase(), "max-width", MaxWidth);
@@ -397,19 +397,28 @@ public class ABMModalSheet extends ABMObject {
 		}
 	}
 	
-	protected void SetEventHandler() {
-		if (EventHandler!=null) {
-			Page.EventHandlers.put(ID.toLowerCase(), EventHandler);	
+	protected void DoSetEventHandler() {
+		if (mEventHandler!=null) {
+			Page.EventHandlers.put(ID.toLowerCase(), mEventHandler);	
 			if (!Header.Rows.isEmpty()) {			
-				Header.SetEventHandlerParent(EventHandler);			
+				Header.DoSetEventHandlerParent(mEventHandler);			
 			}
 			if (!Content.Rows.isEmpty()) {			
-				Content.SetEventHandlerParent(EventHandler);					
+				Content.DoSetEventHandlerParent(mEventHandler);					
 			}		
 			if (!Footer.Rows.isEmpty()) {				
-				Footer.SetEventHandlerParent(EventHandler);					
+				Footer.DoSetEventHandlerParent(mEventHandler);					
 			}
 		}
+	}
+	
+	public void setEventHandler(Object hand) {
+		mEventHandler = hand;
+		DoSetEventHandler();
+	}
+	
+	public Object getEventHandler() {
+		return mEventHandler;
 	}
 	
 	protected String BuildStyleHeader() {

@@ -679,7 +679,8 @@ public class ABMPivotTable extends ABMComponent {
 		}
 		s.append("<script type=\"text/javascript\">");		
 		if (UsesGoogleCharts) {
-			s.append("google.load(\"visualization\", \"1\", {packages:[\"corechart\", \"charteditor\"]});");		
+			//s.append("google.load(\"visualization\", \"1\", {packages:[\"corechart\", \"charteditor\"]});");		
+			s.append("google.load(\"visualization\", \"1\", {packages:[\"corechart\"]});");
 		}
 		if (!mDocumentURL.equals("")) {
 			s.append("$(function(){");

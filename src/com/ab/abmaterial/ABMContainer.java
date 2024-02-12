@@ -1327,9 +1327,9 @@ public class ABMContainer extends ABMComponent{
 	}
 	
 	
-	@Hide
+	//@Hide
 	@Override
-	protected String Build() {
+	public String Build() {
 		
 		if (Theme.ThemeName.equals("default")) {
 			Theme.Colorize(Page.CompleteTheme.MainColor);
@@ -1454,50 +1454,50 @@ public class ABMContainer extends ABMComponent{
 	}
 	
 	@Override
-	protected void SetEventHandler() {
-		if (EventHandler!=null) {
+	protected void DoSetEventHandler() {
+		if (mEventHandler!=null) {
 			if (!ArrayName.equals("")) {
-				Page.EventHandlers.put(ArrayName.toLowerCase(), EventHandler);
+				Page.EventHandlers.put(ArrayName.toLowerCase(), mEventHandler);
 			} else {
-				Page.EventHandlers.put(ID.toLowerCase(), EventHandler);
+				Page.EventHandlers.put(ID.toLowerCase(), mEventHandler);
 			}
 				
 			if (!mIsCollapsable) {
 				for (Entry<String, ABMRow> row : Rows.entrySet()) {	
-					row.getValue().SetEventHandlerParent(EventHandler);
+					row.getValue().DoSetEventHandlerParent(mEventHandler);
 				}
 			} else {
-				this.mCollapseHeading.SetEventHandlerParent(EventHandler);
-				this.mCollapseBody.SetEventHandlerParent(EventHandler);
+				this.mCollapseHeading.DoSetEventHandlerParent(mEventHandler);
+				this.mCollapseBody.DoSetEventHandlerParent(mEventHandler);
 			}
 		}
 	}
 	
-	protected void SetEventHandlerExtracontentSidebar() {
-		if (EventHandler!=null) {
+	protected void DoSetEventHandlerExtracontentSidebar() {
+		if (mEventHandler!=null) {
 			if (!ArrayName.equals("")) {
-				Page.EventHandlers.put(extra + ArrayName.toLowerCase(), EventHandler);
+				Page.EventHandlers.put(extra + ArrayName.toLowerCase(), mEventHandler);
 			} else {
-				Page.EventHandlers.put(ID.toLowerCase(), EventHandler);
+				Page.EventHandlers.put(ID.toLowerCase(), mEventHandler);
 			}
 				
 			if (!mIsCollapsable) {
 				for (Entry<String, ABMRow> row : Rows.entrySet()) {	
-					row.getValue().SetEventHandlerParent(EventHandler);
+					row.getValue().DoSetEventHandlerParent(mEventHandler);
 				}
 			} else {
-				this.mCollapseHeading.SetEventHandlerParent(EventHandler);
-				this.mCollapseBody.SetEventHandlerParent(EventHandler);
+				this.mCollapseHeading.DoSetEventHandlerParent(mEventHandler);
+				this.mCollapseBody.DoSetEventHandlerParent(mEventHandler);
 			}
 		}
 	}
 	
 	@Override
-	protected void SetEventHandlerParent(Object parentEventHandler) {
-		if (EventHandler==null) {
-			EventHandler = parentEventHandler;
+	protected void DoSetEventHandlerParent(Object parentEventHandler) {
+		if (mEventHandler==null) {
+			mEventHandler = parentEventHandler;
 		}
-		SetEventHandler();
+		DoSetEventHandler();
 	}
 	
 	protected String BuildStyle() {

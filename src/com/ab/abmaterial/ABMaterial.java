@@ -25,6 +25,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.net.HttpURLConnection;
+//import java.net.HttpURLConnection;
 import java.net.Inet6Address;
 import java.net.InetAddress;
 import java.net.MalformedURLException;
@@ -32,6 +33,8 @@ import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.DirectoryStream;
@@ -69,6 +72,9 @@ import javax.net.ssl.HttpsURLConnection;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
+
+import java.nio.ByteBuffer;
+
 
 import com.ab.abmaterial.ABMChronologyList.ChronoSlide;
 import com.ab.abmaterial.ABMCombo.ABMComboItem;
@@ -109,8 +115,8 @@ import anywheresoftware.b4a.BA.CustomClass;
 	       @CustomClass(name = "ABM B4JS", fileNameWithoutExtension = "abm_b4js")
 })
 
-@DesignerName("Build 20220708")                                    
-@Version(5.00F)                                
+@DesignerName("Build 20240212")                                    
+@Version(5.12F)                                
 @Author("Alain Bailleul")      
 @ShortName("ABMaterial")    
 @DependsOn(values={"jServer", "pngtastic-1.1", "microsoft-translator-java-api-0.6.2-jar-with-dependencies", "prettytime-4.0.1.Final", "commons-lang3-3.11", "thumbnailator-0.4.8", "httpcore-4.4.15", "httpclient-4.5.13", "cloudinary-core-1.19.0", "cloudinary-http44-1.19.0", "httpmime-4.5.13", "commons-logging-1.2"}) //, "yuicompressor-2.4.8", "rhino-1.7.8"}) //, "hazelcast-all-3.8.4"})
@@ -1734,7 +1740,8 @@ public class ABMaterial {
 		return mymessage.getID();
 	}
 	
-	public String MakeRESTApiCall(String method, String restUrl, String jsonBody, anywheresoftware.b4a.objects.collections.Map headers) {
+	public RESTAPIResult MakeRESTApiCall(String method, String restUrl, String jsonBody, anywheresoftware.b4a.objects.collections.Map headers, int HTTPExpected) {
+		RESTAPIResult res = new RESTAPIResult();
 			HttpsURLConnection urlConnection = null;
 			try {
 			  URL url = new URL(restUrl);
@@ -1754,31 +1761,60 @@ public class ABMaterial {
 			  }
 			  urlConnection.connect();
 
-			  byte[] outputBytes = jsonBody.getBytes("UTF-8");
-			  OutputStream out = urlConnection.getOutputStream();
-			  out.write(outputBytes);
-			  out.flush();
-			  out.close();
-
-			  int statusCode = urlConnection.getResponseCode();
-			  String tmpCode="";
-			  if (statusCode != HttpURLConnection.HTTP_OK) {
-			    BA.Log("MakeRESTApiCall: connection failed: statusCode: " + statusCode);
-			    tmpCode = "connection failed -> statusCode: " + statusCode + "\n";
+			  if (!jsonBody.equals("")) {
+				  byte[] outputBytes = jsonBody.getBytes("UTF-8");
+				  OutputStream out = urlConnection.getOutputStream();
+				  out.write(outputBytes);
+				  out.flush();
+				  out.close();
 			  }
 
-			  InputStream in = new BufferedInputStream(urlConnection.getInputStream());
-			  String responseText = convertInputStreamToString(in);
-			  return tmpCode + responseText;
+			  //String tmpCode="";
+			  res.statusCode = urlConnection.getResponseCode();
+			  //BA.Log("HTTPStatus: " + res.statusCode);
+			  //if (res.statusCode != HttpURLConnection.HTTP_OK) {
+			  if (res.statusCode != HTTPExpected) {
+			    BA.Log("MakeRESTApiCall: connection failed: statusCode: " + res.statusCode);
+			    
+			    InputStream in = new BufferedInputStream(urlConnection.getErrorStream());
+				String responseText = convertInputStreamToString(in);
+				  
+				res.Body = responseText;
+			    
+			    if (urlConnection != null) {
+				    urlConnection.disconnect();
+				}
+			    
+			    return res;
+			    //tmpCode = "connection failed -> statusCode: " + statusCode + "\n";			    
+			  }
+
+			  if (res.statusCode != HttpURLConnection.HTTP_NO_CONTENT) {
+				  InputStream in = new BufferedInputStream(urlConnection.getInputStream());
+				  String responseText = convertInputStreamToString(in);
+			  
+				  res.Body = responseText;
+			  }		  
+			  
+			  return res;
 
 			} catch (IOException e) {
 			  e.printStackTrace();
+			  res.statusCode = 999;
+			  res.Body = "Unknown error";		  
 			} finally {
 			  if (urlConnection != null) {
 			    urlConnection.disconnect();
 			  }
 			}
-			return "";
+			return res;
+	}
+	
+	@ShortName("RESTAPIResult")
+	public class RESTAPIResult {
+		public int statusCode=0;
+		public String Body="";
+		public String Extra="";
 	}
 	
 	private static String convertInputStreamToString(InputStream is) {
@@ -1791,7 +1827,7 @@ public class ABMaterial {
             /*
              * Create BufferedReader from InputStreamReader 
              */
-            br = new BufferedReader(new InputStreamReader(is));
+            br = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8));
             
             /*
              * read line by line and append content to
@@ -1837,6 +1873,37 @@ public class ABMaterial {
 	public static void RemoveMeFromCache(anywheresoftware.b4a.objects.collections.Map cachedPages, String pageID) {
 		if (pageID.length()>0) {
 			if (cachedPages.IsInitialized()) {
+				//BA.Log(pageID + " manually removed from the Cache");
+				/*
+				B4AClass cachedClass = (B4AClass) cachedPages.Get(pageID);
+				if (cachedClass!=null) {
+					try {
+						anywheresoftware.b4a.keywords.Common.CallSubNew(ba,cachedClass,"Page_RemovedFromCache");
+					} catch (Exception e) {
+						//e.printStackTrace();
+					}
+				}
+				*/
+				cachedPages.Remove(pageID + "_ABMWSField");
+				cachedPages.Remove(pageID);
+			}
+		}
+	}	
+	
+	public static void RemoveMeFromCache2(anywheresoftware.b4a.objects.collections.Map cachedPages, String pageID, String msg) {
+		if (pageID.length()>0) {
+			if (cachedPages.IsInitialized()) {
+				BA.Log(pageID + " " + msg);
+				/*
+				B4AClass cachedClass = (B4AClass) cachedPages.Get(pageID);
+				if (cachedClass!=null) {
+					try {
+						anywheresoftware.b4a.keywords.Common.CallSubNew(ba,cachedClass,"Page_RemovedFromCache");
+					} catch (Exception e) {
+						//e.printStackTrace();
+					}
+				}
+				*/
 				cachedPages.Remove(pageID + "_ABMWSField");
 				cachedPages.Remove(pageID);
 			}
@@ -6393,6 +6460,21 @@ public class ABMaterial {
 		}
 	}
 	
+	public static String randomId22() {
+
+        // Create random UUID
+        UUID uuid = UUID.randomUUID();
+
+        // Create byte[] for base64 from uuid
+        byte[] src = ByteBuffer.wrap(new byte[16])
+                .putLong(uuid.getMostSignificantBits())
+                .putLong(uuid.getLeastSignificantBits())
+                .array();
+
+        // Encode to Base64 and remove trailing ==
+        return Base64.getUrlEncoder().encodeToString(src).substring(0, 22);
+    }
+	
 	@Hide
 	public static String GetActiveTab(ABMPage page, String tabsId) {
 		anywheresoftware.b4a.objects.collections.List Params = new anywheresoftware.b4a.objects.collections.List();
@@ -8296,10 +8378,10 @@ public class ABMaterial {
 	                	writer.write("<html>\n<head>\n");
 	                }
 	                if (CW) {
-                    	String z = encrypt("This WebApp/WebSite was generated using ABMaterial v" + ABMaterial.Version + ", a B4X library written by Alain Bailleul 2015-2020. See http://alwaysbusycorner.com/abmaterial");
+                    	String z = encrypt("This WebApp/WebSite was generated using ABMaterial v" + ABMaterial.Version + ", a B4X library written by Alain Bailleul 2015-2022. See http://alwaysbusycorner.com/abmaterial");
                     	writer.write("<!-- " + z + " -->\n");                    	
                     } else {
-                    	writer.write("<!-- This WebApp/WebSite was generated using ABMaterial v" + ABMaterial.Version + ", a B4X library written by Alain Bailleul 2015-2020. See http://alwaysbusycorner.com/abmaterial -->\n");
+                    	writer.write("<!-- This WebApp/WebSite was generated using ABMaterial v" + ABMaterial.Version + ", a B4X library written by Alain Bailleul 2015-2022. See http://alwaysbusycorner.com/abmaterial -->\n");
                     }
                 	writer.write("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=" + page.PageCharset + "\">\n");            	
 	                if (!page.PageKeywords.equals("")) {
@@ -8474,6 +8556,8 @@ public class ABMaterial {
 		NeededIcons.put("keyboard_arrow_right", true);
 		
 		NeededIcons.put("fa-check-circle", true);	
+		
+		NeededIcons.put("fa fa-database", true);
 				
 			
 		LoadIcons();
@@ -10039,6 +10123,112 @@ public class ABMaterial {
 			iconmap.put("fa-meetup",":before{content:\"\\f2e0\"}");
 			
 		}
-	}	
+	}
+	
+	public static String EncodeURL(String input) {
+		try {
+			return URLEncoder.encode(input, "UTF-8");
+		} catch (UnsupportedEncodingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return input;
+		}
+	}
+	
+	public static String DecodeURL(String input) {
+		try {
+			return URLDecoder.decode(input, "UTF-8");
+		} catch (UnsupportedEncodingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return input;
+		}
+	}
+	
+	 public static String escape(String input) {
+		    StringBuilder output = new StringBuilder();
+
+		    for(int i=0; i<input.length(); i++) {
+		      char ch = input.charAt(i);
+		      int chx = (int) ch;
+
+		      // let's not put any nulls in our strings
+		      assert(chx != 0);
+
+		      if(ch == '\n') {
+		        output.append("\\n");
+		      } else if(ch == '\t') {
+		        output.append("\\t");
+		      } else if(ch == '\r') {
+		        output.append("\\r");
+		      } else if(ch == '\\') {
+		        output.append("\\\\");
+		      } else if(ch == '"') {
+		        output.append("\\\"");
+		      } else if(ch == '\b') {
+		        output.append("\\b");
+		      } else if(ch == '\f') {
+		        output.append("\\f");
+		      } else if(chx >= 0x10000) {
+		        assert false : "Java stores as u16, so it should never give us a character that's bigger than 2 bytes. It literally can't.";
+		      } else if(chx > 127) {
+		        output.append(String.format("\\u%04x", chx));
+		      } else {
+		        output.append(ch);
+		      }
+		    }
+
+		    return output.toString();
+		  }
+
+	 public static String unescape(String input) {
+		    StringBuilder builder = new StringBuilder();
+
+		    int i = 0;
+		    while (i < input.length()) {
+		      char delimiter = input.charAt(i); i++; // consume letter or backslash
+
+		      if(delimiter == '\\' && i < input.length()) {
+
+		        // consume first after backslash
+		        char ch = input.charAt(i); i++;
+
+		        if(ch == '\\' || ch == '/' || ch == '"' || ch == '\'') {
+		          builder.append(ch);
+		        }
+		        else if(ch == 'n') builder.append('\n');
+		        else if(ch == 'r') builder.append('\r');
+		        else if(ch == 't') builder.append('\t');
+		        else if(ch == 'b') builder.append('\b');
+		        else if(ch == 'f') builder.append('\f');
+		        else if(ch == 'u') {
+
+		          StringBuilder hex = new StringBuilder();
+
+		          // expect 4 digits
+		          if (i+4 > input.length()) {
+		            throw new RuntimeException("Not enough unicode digits! ");
+		          }
+		          for (char x : input.substring(i, i + 4).toCharArray()) {
+		            if(!Character.isLetterOrDigit(x)) {
+		              throw new RuntimeException("Bad character in unicode escape.");
+		            }
+		            hex.append(Character.toLowerCase(x));
+		          }
+		          i+=4; // consume those four digits.
+
+		          int code = Integer.parseInt(hex.toString(), 16);
+		          builder.append((char) code);
+		        } else {
+		          throw new RuntimeException("Illegal escape sequence: \\"+ch);
+		        }
+		      } else { // it's not a backslash, or it's the last character.
+		        builder.append(delimiter);
+		      }
+		    }
+
+		    return builder.toString();
+		  }
+		
 		
 }

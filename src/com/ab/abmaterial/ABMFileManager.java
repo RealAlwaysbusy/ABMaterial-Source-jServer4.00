@@ -1,6 +1,8 @@
 package com.ab.abmaterial;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.text.SimpleDateFormat;
@@ -23,6 +25,7 @@ import anywheresoftware.b4a.BA.Author;
 import anywheresoftware.b4a.BA.Events;
 import anywheresoftware.b4a.BA.Hide;
 import anywheresoftware.b4a.BA.ShortName;
+import anywheresoftware.b4a.keywords.Regex;
 import anywheresoftware.b4j.object.WebSocket.SimpleFuture;
 import anywheresoftware.b4j.objects.collections.JSONParser;
 
@@ -142,6 +145,11 @@ public class ABMFileManager extends ABMComponent {
 		Icons.put("bas", "fa fa-file-code-o");
 
 		Icons.put("txt", "fa fa-file-text-o");
+		Icons.put("log", "fa fa-file-text-o");
+		Icons.put("db", "fa fa-database");
+		
+		
+		
 
 		Root = root;
 		OrigRoot=root;
@@ -285,11 +293,66 @@ public class ABMFileManager extends ABMComponent {
 		return ret;
 	}
 	
+	/*
+	 * FolderFileData: Comma delimited String FileName,IsDirectory(0=,1<>),FileSize 
+	 
+	public String BuildJson(String folder, anywheresoftware.b4a.objects.collections.List FolderFileData) {
+		CurrentPath = folder;
+		if (!Root.endsWith("/")) {
+			Root = Root + "/";		
+		}
+		folder = Root + folder;
+		CurrentFullPath = folder;
+		
+		String thumb = "";
+		String name = "";
+		String size = "";
+		String date = "";
+		String icon="";
+		
+		String lang = Page.DetectLanguage(Page.ws.getUpgradeRequest().GetHeader("Accept-Language"));
+		Locale locale = localeFromString(lang);
+		
+		StringBuilder s = new StringBuilder();
+		
+		List<String> Folders= new ArrayList<String>();
+		List<String> Files = new ArrayList<String>();
+		
+		for (int i=0;i<FolderFileData.getSize();i++) {
+			String fName = (String)FolderFileData.Get(i);
+			String spl[] = Regex.Split(",", fName);
+			if (spl[2]=="0") {
+				Folders.add(fName);
+			} else {
+				Files.add(fName);
+			}
+		}
+		
+		String[] foldersSort = Folders.toArray(new String[Folders.size()]);
+		Arrays.sort(foldersSort); 
+		String[] filesSort = Files.toArray(new String[Files.size()]);
+		Arrays.sort(filesSort); 
+		
+		boolean isFirst=true;
+		
+		s.append("'{" + BuildBreadCrumbsJson(folder) + ",\"folders\": [");
+		
+		BuildDirectoryTreeJson(Root, folder, s,0);
+		if (s.toString().endsWith(",")) {
+			s.deleteCharAt(s.length()-1);	
+		}
+		
+		s.append("], \"files\": [");
+		
+		return s.toString();
+	}
+	*/
+	
 	/**
 	 * The thumbnail folder must be in your www folder! 
 	 * 
 	 */
-	public void LoadFolder(String folder, String thumbnailFolder, boolean buildImageThumbnailIfNotExists) {
+	public String LoadFolder(String folder, String thumbnailFolder, boolean buildImageThumbnailIfNotExists) {
 		CurrentPath = folder;
 		if (!Root.endsWith("/")) {
 			Root = Root + "/";		
@@ -432,7 +495,163 @@ public class ABMFileManager extends ABMComponent {
 		} catch (IOException e) {			
 			e.printStackTrace();
 		}
+		
+		return s.toString();
 	}
+	
+	public String LoadFolderNoThumbnails(String folder) {
+		CurrentPath = folder;
+		if (!Root.endsWith("/")) {
+			Root = Root + "/";		
+		}
+		File rootFile = new File(Root);
+		folder = Root + folder;
+		CurrentFullPath = folder;
+		
+		File dir = new File(folder);
+		String thumb = "";
+		String name = "";
+		String size = "";
+		String date = "";
+		String icon="";
+		
+		StringBuilder s = new StringBuilder();
+		
+		String lang = Page.DetectLanguage(Page.ws.getUpgradeRequest().GetHeader("Accept-Language"));
+		Locale locale = localeFromString(lang);
+		
+		List<File> Folders= new ArrayList<File>();
+		List<File> Files = new ArrayList<File>();
+		
+		for (File file: dir.listFiles()) {
+			if (file.isDirectory()) {
+				Folders.add(file);
+			} else {
+				Files.add(file);
+			}
+		}
+		
+		File[] foldersSort = Folders.toArray(new File[Folders.size()]);
+		Arrays.sort(foldersSort); 
+		File[] filesSort = Files.toArray(new File[Files.size()]);
+		Arrays.sort(filesSort); 
+		
+		boolean isFirst=true;
+		
+		s.append("'{" + BuildBreadCrumbs(folder, rootFile) + ",\"folders\": [");
+		
+		BuildDirectoryTree(rootFile, dir, s,0);
+		if (s.toString().endsWith(",")) {
+			s.deleteCharAt(s.length()-1);	
+		}
+		
+		s.append("], \"files\": [");
+				
+		for (File file: foldersSort) {
+			if (!isFirst) {
+				s.append(",");				
+			}
+			isFirst=false;
+			icon = "folder";
+			date = "";
+			size = "";
+			thumb = "";
+			name = file.getName();
+			s.append("{\"icon\": \"folder\",\"name\": \"" + name.replace("'", "\\\'") + "\",\"folder\": \"true\", \"size\": \"\", \"date\": \"\", \"image\": \"\"}");
+		}
+		
+		for (File file: filesSort) {
+			if (!isFirst) {
+				s.append(",");				
+			}
+			isFirst=false;
+	        name = file.getName();
+	        thumb="";
+	        String fileName = name.toLowerCase();
+	        int i = fileName.lastIndexOf(".");
+		    if (i>-1) {
+		      	icon = Icons.getOrDefault(fileName.substring(i+1), "fa fa-file-o");
+		    } else {
+		       	icon = "fa fa-file-o";
+		    }
+		    
+		    //SimpleDateFormat sdf = new SimpleDateFormat(DateFormat);
+		    //
+		    //date = sdf.format(file.lastModified());
+	    	//size = humanReadableByteCount(file.length(), true, locale);
+		    
+		    BufferedReader reader;
+		    
+		    long sizeLng=0;
+
+			try {
+				reader = new BufferedReader(new FileReader(file.getAbsolutePath()));
+				String line = reader.readLine();
+
+				int cnt=0;
+				while (line != null) {
+					if (cnt==0) {
+						date = line;
+					}
+					if (cnt==1) {
+						
+						sizeLng = Long.parseLong(line);
+					}
+					cnt++;
+					line = reader.readLine();
+				}
+				size = humanReadableByteCount(sizeLng, true, locale);	
+				reader.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		    
+	    	s.append("{\"icon\": \"" + icon + "\",\"name\": \"" + name.replace("'", "\\\'") + "\",\"folder\": \"false\", \"size\": \"" + size + "\", \"date\": \"" + date + "\", \"image\": \"" + thumb.replace("'", "\\\'") + "\"}");
+		}
+		s.append("]}';");
+		
+		String tmpVar = ParentString + this.ArrayName.toLowerCase() + this.ID.toLowerCase();
+		tmpVar = tmpVar.replace("-", "_");
+		
+		StringBuilder sSend = new StringBuilder();
+		
+		sSend.append("fileMans['" + tmpVar + "'].clearFolder();");
+		sSend.append("var " + tmpVar + "_json = " + s.toString());
+		sSend.append("fileMans['" + tmpVar + "'].loadFolder(" + tmpVar + "_json);");
+		
+		Page.ws.Eval(sSend.toString(), null);
+		
+		try {
+			if (Page.ws.getOpen())
+			Page.ws.Flush();Page.RunFlushed();
+		} catch (IOException e) {			
+			e.printStackTrace();
+		}
+		
+		return s.toString();
+	}
+	
+	/*
+	public void LoadFolderFromJson(String jsonStr) {
+		String tmpVar = ParentString + this.ArrayName.toLowerCase() + this.ID.toLowerCase();
+		tmpVar = tmpVar.replace("-", "_");
+		
+		StringBuilder sSend = new StringBuilder();
+		
+		sSend.append("fileMans['" + tmpVar + "'].clearFolder();");
+		sSend.append("var " + tmpVar + "_json = " + jsonStr);
+		sSend.append("fileMans['" + tmpVar + "'].loadFolder(" + tmpVar + "_json);");
+		
+		Page.ws.Eval(sSend.toString(), null);
+		
+		try {
+			if (Page.ws.getOpen())
+			Page.ws.Flush();Page.RunFlushed();
+		} catch (IOException e) {			
+			e.printStackTrace();
+		}
+	}
+	*/
 	
 	private static void BuildDirectoryTree(File folder, File targetFolder, StringBuilder sb, int level) {
 		if (!folder.isDirectory()) {
@@ -560,6 +779,25 @@ public class ABMFileManager extends ABMComponent {
 			}
 		}
 	
+		s.append("{\"name\": \"" + fileName.replace("'", "\\\'") + "\", \"fullPath\": \"" + thePath.replace("'", "\\\'") + "\"}");		
+		s.append("]");	
+		
+		return s.toString();
+	}
+	
+	public String BuildBreadCrumbsJson(String folder) {
+		StringBuilder s = new StringBuilder();
+		s.append("\"crumbs\": [");
+		s.append("{\"name\": \"" + RootName.replace("'", "\\\'") + "\"},");
+		//File file = new File(folder);
+		String spl[] = Regex.Split("/", folder);
+		String fileName = spl[spl.length-1];
+		
+		folder = folder.substring(Root.length()+1);
+		BA.Log(fileName);
+		BA.Log(folder);
+		String thePath = folder.substring(0, folder.length()-(fileName.length()+1));
+			
 		s.append("{\"name\": \"" + fileName.replace("'", "\\\'") + "\", \"fullPath\": \"" + thePath.replace("'", "\\\'") + "\"}");		
 		s.append("]");	
 		

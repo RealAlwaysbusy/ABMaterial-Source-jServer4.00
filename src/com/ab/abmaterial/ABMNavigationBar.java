@@ -1386,13 +1386,13 @@ public class ABMNavigationBar extends ABMObject {
 		if (DoTopBar) {
 			for (ABMNavBarItem item: TopItems) {
 				if (item.SideBar!=null) {
-					item.SideBar.Content.SetEventHandler();
+					item.SideBar.Content.DoSetEventHandler();
 					item.SideBar.FirstRun();				
 				}
 			}
 					
 			if (WithExtraContent) {
-				mExtraContent.SetEventHandler();
+				mExtraContent.DoSetEventHandler();
 				mExtraContent.RunAllFirstRunsInternal(false);
 			}
 			if (WithExtraHalfButton && mExtraHalfFloatingButton.IsInitialized) {

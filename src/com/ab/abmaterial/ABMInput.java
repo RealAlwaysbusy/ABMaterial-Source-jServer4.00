@@ -1049,7 +1049,7 @@ public class ABMInput extends ABMComponent {
 			if (ArrayName.equals("")) {
 				s.append("<textarea " + toolTip + charCounter + B4JSData + spellCheck + onClick +" id=\"" + ParentString + ArrayName.toLowerCase() + ID.toLowerCase() + "\" type=\"" + mInputType + "\" allowtab=\"" + this.AllowTabInTextArea + "\" evname=\"" + ArrayName.toLowerCase() + ID.toLowerCase() + "\" ");				
 			} else {
-				s.append("<textarea " + toolTip + charCounter + B4JSData + spellCheck + onClick +" id=\"" + ParentString + ArrayName.toLowerCase() + ID.toLowerCase() + "\" type=\"" + mInputType + "\" allowtab=\"" + this.AllowTabInTextArea + "\" evname=\"" + ArrayName.toLowerCase() + "\" ");
+				s.append("<textarea " + toolTip + charCounter + B4JSData + spellCheck + onClick +" id=\"" + ParentString + ArrayName.toLowerCase() + ID.toLowerCase() + "\" type=\"" + mInputType + "\" allowtab=\"" + this.AllowTabInTextArea + "\" evname=\"" + ArrayName.toLowerCase() + "\" idname=\"" + ID.toLowerCase() + "\" ");
 			}
 		} else {
 			if (IsFileInput) {

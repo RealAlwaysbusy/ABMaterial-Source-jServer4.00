@@ -37,7 +37,7 @@ public class ABMComponent extends ABMObject {
 	
 	protected String extra="";
 	
-	public Object EventHandler=null;
+	protected Object mEventHandler=null;
 	
 	protected JQueryElement JQ=null;
 	
@@ -345,23 +345,32 @@ public class ABMComponent extends ABMObject {
 		return s.toString() + " ";
 	}
 	
-	protected void SetEventHandler() {
-		if (EventHandler!=null) {
+	protected void DoSetEventHandler() {
+		if (mEventHandler!=null) {
 			if (!ArrayName.equals("")) {
-				Page.EventHandlers.put(ArrayName.toLowerCase(), EventHandler);
+				Page.EventHandlers.put(ArrayName.toLowerCase(), mEventHandler);
 			} else {
-				Page.EventHandlers.put(ID.toLowerCase(), EventHandler);
+				Page.EventHandlers.put(ID.toLowerCase(), mEventHandler);
 			}
 			
 						
 		}
 	}
 	
-	protected void SetEventHandlerParent(Object parentEventHandler) {
-		if (EventHandler==null) {
-			EventHandler = parentEventHandler;
+	protected void DoSetEventHandlerParent(Object parentEventHandler) {
+		if (mEventHandler==null) {
+			mEventHandler = parentEventHandler;
 		}
-		SetEventHandler();
+		DoSetEventHandler();
+	}
+	
+	public void setEventHandler(Object hand) {
+		mEventHandler = hand;
+		DoSetEventHandler();
+	}
+	
+	public Object getEventHandler() {
+		return mEventHandler;
 	}
 	
 	
