@@ -115,15 +115,15 @@ import anywheresoftware.b4a.BA.CustomClass;
 	       @CustomClass(name = "ABM B4JS", fileNameWithoutExtension = "abm_b4js")
 })
 
-@DesignerName("Build 20240212")                                    
-@Version(5.12F)                                
+@DesignerName("Build 20240329")                                    
+@Version(5.14F)                                
 @Author("Alain Bailleul")      
 @ShortName("ABMaterial")    
 @DependsOn(values={"jServer", "pngtastic-1.1", "microsoft-translator-java-api-0.6.2-jar-with-dependencies", "prettytime-4.0.1.Final", "commons-lang3-3.11", "thumbnailator-0.4.8", "httpcore-4.4.15", "httpclient-4.5.13", "cloudinary-core-1.19.0", "cloudinary-http44-1.19.0", "httpmime-4.5.13", "commons-logging-1.2"}) //, "yuicompressor-2.4.8", "rhino-1.7.8"}) //, "hazelcast-all-3.8.4"})
 public class ABMaterial {
-	public final static String VersionName="Dragonfly";
-	public final static String Version="4.96";
-	public final static String Version496="4.96";
+	public final static String VersionName="Freebird";
+	public final static String Version="5.14";
+	public final static String Version514="5.14";
 	
 	protected final static String CSSMaterialize=".4.35";
 	protected final static String CSSTimeline=".3.00";
@@ -161,6 +161,8 @@ public class ABMaterial {
 	protected final static String JSLangAll=".3.00";
 	protected final static String JSConzole=".3.20";
 	protected final static String JSFileManager=".4.31";
+	
+	protected static String RuntimeVersion="";
 	
 	protected static String CacheSystem="1.0";	
 	protected static Cloudinary cloudinary=null;	
@@ -1512,7 +1514,7 @@ public class ABMaterial {
 		session.setMaxTextMessageBufferSize(maxSize);
 	}
 	*/
-	
+		
 	public void B4JSLoadOnServer(String jsFolder, anywheresoftware.b4a.objects.collections.List ScriptsToLoad) {
 		try {
 			if (!jsFolder.endsWith("/") && !jsFolder.endsWith("\\")) {
@@ -7523,6 +7525,28 @@ public class ABMaterial {
 			}
 			
 		}
+	}
+	
+	/** 
+	 * Can only be used in B4J code, not in BANano code!
+	 */
+	public String SetRuntimeVersion(String appName, long Major, long Minor, long Patch) {
+		int BuildY = LocalDate.now().getYear();
+		int Build = LocalDate.now().getDayOfYear();
+		if(appName.length()>0) {
+			RuntimeVersion = appName + "." + Long.toString(Major) + "." + Long.toString(Minor) + "." + Long.toString(Patch) + "." + Long.toString(BuildY) + Long.toString(Build);   
+		} else {
+			RuntimeVersion = Long.toString(Major) + "." + Long.toString(Minor) + "." + Long.toString(Patch) + "." + Long.toString(BuildY) + Long.toString(Build);
+		}
+				
+		return RuntimeVersion;
+	}
+	
+	/** 
+	 * Can only be used in B4J code, not in BANano code!
+	 */
+	public String GetRuntimeVersion() {
+		return RuntimeVersion;
 	}
 	
 	public String GetMyIP() throws SocketException {
