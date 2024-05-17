@@ -115,15 +115,15 @@ import anywheresoftware.b4a.BA.CustomClass;
 	       @CustomClass(name = "ABM B4JS", fileNameWithoutExtension = "abm_b4js")
 })
 
-@DesignerName("Build 20240329")                                    
-@Version(5.14F)                                
+@DesignerName("Build 20240517")                                    
+@Version(5.15F)                                
 @Author("Alain Bailleul")      
 @ShortName("ABMaterial")    
 @DependsOn(values={"jServer", "pngtastic-1.1", "microsoft-translator-java-api-0.6.2-jar-with-dependencies", "prettytime-4.0.1.Final", "commons-lang3-3.11", "thumbnailator-0.4.8", "httpcore-4.4.15", "httpclient-4.5.13", "cloudinary-core-1.19.0", "cloudinary-http44-1.19.0", "httpmime-4.5.13", "commons-logging-1.2"}) //, "yuicompressor-2.4.8", "rhino-1.7.8"}) //, "hazelcast-all-3.8.4"})
 public class ABMaterial {
 	public final static String VersionName="Freebird";
-	public final static String Version="5.14";
-	public final static String Version514="5.14";
+	public final static String Version="5.15";
+	public final static String Version515="5.15";
 	
 	protected final static String CSSMaterialize=".4.35";
 	protected final static String CSSTimeline=".3.00";
@@ -923,12 +923,22 @@ public class ABMaterial {
 	private static Map<String,String> colorMap = new HashMap<String,String>();
 	private static ABMHtmlUtils innerHTMLConv=null;
 	
+	/*
 	protected List<String> AppleTouchIcons=new ArrayList<String>();
 	protected List<String> MSTileIcons=new ArrayList<String>();
 	protected List<String> FavorityIcons=new ArrayList<String>();
 	protected List<String> AppleTouchIconSizes=new ArrayList<String>();
 	protected List<String> MSTileIconSizes=new ArrayList<String>();
 	protected List<String> FavorityIconSizes=new ArrayList<String>();
+	*/
+	
+	protected static List<String> AppleTouchIcons=new ArrayList<String>();
+	protected static List<String> MSTileIcons=new ArrayList<String>();
+	protected static List<String> FavorityIcons=new ArrayList<String>();
+	protected static List<String> AppleTouchIconSizes=new ArrayList<String>();
+	protected static List<String> MSTileIconSizes=new ArrayList<String>();
+	protected static List<String> FavorityIconSizes=new ArrayList<String>(); 
+	
 	public static String Manifest="";
 	public static String MaskIcon="";
 	public static String MaskIconColor=ABMaterial.COLOR_WHITE;
